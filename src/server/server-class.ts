@@ -1,12 +1,12 @@
-import * as express from 'express';
-import * as cors from 'cors';
-import * as compression from 'compression';
+import express from 'express';
+import cors from 'cors';
+import compression from 'compression';
 import cfg from './../config/config';
-import * as http from 'http';
-import * as https from 'https';
+import http from 'http';
+import https from 'https';
 import { ApolloServer } from 'apollo-server-express';
 import schema from './../schema';
-import * as path from 'path';
+import path from 'path';
 
 export default class Server {
 
@@ -23,7 +23,7 @@ export default class Server {
     this.setApolloServer(this.app);
   }
 
-  static init(port) {
+  static init(port: number) {
     return new Server(port);
   }
 

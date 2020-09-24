@@ -1,6 +1,6 @@
 import 'graphql-import-node';
 
-import * as typeDefs from './schema.graphql';
+import typeDefs from './schema.graphql';
 import { GraphQLSchema } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 import resolvers from './../resolvers/resolversMap'
