@@ -35,5 +35,32 @@ services:
     networks:
       - hs
 
+  hs_api:
+    build:
+      context: .
+    image: hs_api:latest
+    container_name: hs_api
+    expose:
+      - 7500
+    ports:
+      - "7500:7500"
+    # volumes:
+    #   - ./../config/ssl/:/usr/src/app/ssl
+    environment:
+      PORT: '4500'
+      DB_PORT: '5432'
+      DB_HOST: 'hs_db'
+      PROD: 'false' 
+      MOCK: 'false'
+      # SSL_CA: '/usr/src/app/ssl/ca_bundle.crt'
+      # SSL_KEY: '/usr/src/app/ssl/private.key'
+      # SSL_CRT: '/usr/src/app/ssl/certificate.crt'
+      # SSL_PASSPHRASE: ''
+    restart: always
+    depends_on:
+      - hs_db
+    networks: 
+      - hs
+
 networks:
   hs:
