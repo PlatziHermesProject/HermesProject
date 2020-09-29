@@ -10,8 +10,6 @@ COPY [".", "/usr/src/app"]
 
 RUN ["npm", "run", "build"]
 
-COPY ["./dist", "/usr/src/app/dist"]
-
 EXPOSE 3000
 
 CMD ["npm", "run", "start"]
