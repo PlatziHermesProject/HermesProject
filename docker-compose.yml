@@ -61,6 +61,31 @@ services:
       - hs_db
     networks: 
       - hs
+  
+  hs_io:
+    build:
+      context: ./../HermesSocketIO
+    image: hs_io:latest
+    container_name: hs_io
+    expose:
+      - 3001
+    ports:
+      - "7600:3001"
+    # volumes:
+    #   - ./../config/ssl/:/usr/src/app/ssl
+    environment:
+      PORT: '3001'
+      DB_PORT: '5432'
+      DB_HOST: 'hs_db'
+      # SSL_CA: '/usr/src/app/ssl/ca_bundle.crt'
+      # SSL_KEY: '/usr/src/app/ssl/private.key'
+      # SSL_CRT: '/usr/src/app/ssl/certificate.crt'
+      # SSL_PASSPHRASE: ''
+    restart: always
+    depends_on:
+      - hs_db
+    networks: 
+      - hs
 
 networks:
   hs:
