@@ -20,7 +20,7 @@ services:
       - hs
   
   hs_pgadmin:
-    image: dpage/pgadmin4:4.25
+    image: dpage/pgadmin4:4.22
     container_name: hs_pgadmin
     restart: always
     depends_on: 
