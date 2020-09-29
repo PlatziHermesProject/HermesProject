@@ -1,0 +1,91 @@
+version: "3.8"
+
+services:
+
+  hs_db:
+    image: postgres:12.4
+    container_name: hs_db
+    restart: always
+    ports:
+      - "9432:5432"
+    environment: 
+      POSTGRES_PASSWORD: 'Hermes.2020'
+      POSTGRES_USER: 'hermes'
+      TZ: 'Mexico/General'
+      PGTZ: 'Mexico/General'
+    volumes: 
+      - ./../pg/data/:/var/lib/postgresql/data
+      - ./../pg/backup/:/home
+    networks:
+      - hs
+  
+  hs_pgadmin:
+    image: dpage/pgadmin4:4.22
+    container_name: hs_pgadmin
+    restart: always
+    depends_on: 
+      - hs_db
+    ports: 
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'hermes'
+      PGADMIN_DEFAULT_PASSWORD: 'Hermes.2020'
+    volumes:
+      - ./../pg/pgadmin/:/var/lib/pgadmin
+    networks:
+      - hs
+
+  hs_api:
+    build:
+      context: .
+    image: hs_api:latest
+    container_name: hs_api
+    expose:
+      - 7500
+    ports:
+      - "7500:7500"
+    # volumes:
+    #   - ./../config/ssl/:/usr/src/app/ssl
+    environment:
+      PORT: '7500'
+      DB_PORT: '5432'
+      DB_HOST: 'hs_db'
+      PROD: 'false' 
+      MOCK: 'false'
+      # SSL_CA: '/usr/src/app/ssl/ca_bundle.crt'
+      # SSL_KEY: '/usr/src/app/ssl/private.key'
+      # SSL_CRT: '/usr/src/app/ssl/certificate.crt'
+      # SSL_PASSPHRASE: ''
+    restart: always
+    depends_on:
+      - hs_db
+    networks: 
+      - hs
+  
+  hs_io:
+    build:
+      context: ./../HermesSocketIO
+    image: hs_io:latest
+    container_name: hs_io
+    expose:
+      - 3001
+    ports:
+      - "7600:3001"
+    # volumes:
+    #   - ./../config/ssl/:/usr/src/app/ssl
+    environment:
+      PORT: '3001'
+      DB_PORT: '5432'
+      DB_HOST: 'hs_db'
+      # SSL_CA: '/usr/src/app/ssl/ca_bundle.crt'
+      # SSL_KEY: '/usr/src/app/ssl/private.key'
+      # SSL_CRT: '/usr/src/app/ssl/certificate.crt'
+      # SSL_PASSPHRASE: ''
+    restart: always
+    depends_on:
+      - hs_db
+    networks: 
+      - hs
+
+networks:
+  hs:
