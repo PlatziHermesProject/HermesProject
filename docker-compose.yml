@@ -47,7 +47,7 @@ services:
     # volumes:
     #   - ./../config/ssl/:/usr/src/app/ssl
     environment:
-      PORT: '4500'
+      PORT: '7500'
       DB_PORT: '5432'
       DB_HOST: 'hs_db'
       PROD: 'false' 

@@ -10,6 +10,6 @@ COPY [".", "/usr/src/app"]
 
 RUN ["npm", "run", "build"]
 
-EXPOSE 3000
+EXPOSE 7500
 
 CMD ["npm", "run", "start"]
