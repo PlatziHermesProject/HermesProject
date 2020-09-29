@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+
+  hs_db:
+    image: postgres:12.4
+    container_name: hs_db
+    restart: always
+    ports:
+      - "9432:5432"
+    environment: 
+      POSTGRES_PASSWORD: 'Hermes.2020'
+      POSTGRES_USER: 'hermes'
+      TZ: 'Mexico/General'
+      PGTZ: 'Mexico/General'
+    volumes: 
+      - ./../pg/data/:/var/lib/postgresql/data
+      - ./../pg/backup/:/home
+    networks:
+      - hs
+  
+  hs_pgadmin:
+    image: dpage/pgadmin4
+    container_name: hs_pgadmin
+    restart: always
+    depends_on: 
+      - hs_db
+    ports: 
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'hermes'
+      PGADMIN_DEFAULT_PASSWORD: 'Hermes.2020'
+    volumes:
+      - ./../pg/pgadmin/:/var/lib/pgadmin
+    networks:
+      - hs
+
+networks:
+  hs:
