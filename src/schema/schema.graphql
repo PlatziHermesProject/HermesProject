@@ -3,5 +3,18 @@ type Query {
 }
 
 type Mutation {
+  """
+  Example mutation, retuns string
+  """
   helloUpdate: String
+  """
+  Create account method
+  """
+  createAccount(email: String!, password: String!, name: String!): GeneralResponse
+}
+
+type GeneralResponse {
+  status: String
+  code: String
+  message: String
 }
