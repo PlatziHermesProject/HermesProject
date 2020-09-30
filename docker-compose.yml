@@ -61,6 +61,14 @@ services:
       - hs_db
     networks: 
       - hs
-
+    
+  hs_frontend:
+    build:
+      context: .
+    image: hs_frontend:dev1
+    container_name: hs_frontend  
+    ports:
+      - "8081:80"
+    restart: always
 networks:
   hs:
