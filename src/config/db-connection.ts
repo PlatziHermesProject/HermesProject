@@ -34,6 +34,14 @@ export class PgSql {
     return await (await this.instance.cnn.query(query,params)).rows[0];
   }
 
+  /** 
+   * Execute query without params
+   */
+
+  static async executeQueryWithoutParams(query: string) {
+    return await (await this.instance.cnn.query(query)).rows[0];
+  }
+
   private connectDB() {
     this.cnn.connect(err => {
       if (err) {

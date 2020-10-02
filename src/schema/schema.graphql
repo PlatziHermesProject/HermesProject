@@ -1,5 +1,13 @@
 type Query {
   hello: String
+  """
+  returns user info by Id
+  """
+  getUserInfo(user_id: ID!): User
+  """
+  returns all available user's private chat
+  """
+  getPrivateChatsRooms(user_id: ID!): [UserInChat]
 }
 
 type Mutation {
@@ -17,4 +25,22 @@ type GeneralResponse {
   status: String
   code: String
   message: String
+}
+
+interface User {
+    user_id: ID
+    name: String
+    email: String
+    created: String
+    updated: String
+}
+
+type UserInChat implements User {
+  user_id: ID
+  room_id: ID
+  name: String
+  email: String
+  created: String
+  updated: String
+  status: String
 }
