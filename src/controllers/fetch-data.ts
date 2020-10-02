@@ -87,11 +87,11 @@ export class FetchDataOperations {
             const recipientChats: any = await this.getPrivateChatsRoomsWhenRecipientId(user_id);
             const promisesSender = senderChats.chatsInfo.map(async (element: ChatModel) => {
                 const uData = await this.getUserInfo(element.recipient_id)
-                return {...uData, room_id: element.user_message_id}
+                return {...uData, chat_id: element.user_message_id}
             })
             const promisesRecipient = recipientChats.chatsInfo.map(async (element: ChatModel) => {
                 const uData = await this.getUserInfo(element.sender_id)
-                return {...uData, room_id: element.user_message_id}
+                return {...uData, chat_id: element.user_message_id}
             })
             const rtaSender: any = await Promise.all(promisesSender);
             const rtaRecipient: any = await Promise.all(promisesRecipient);
@@ -119,7 +119,22 @@ export class FetchDataOperations {
             console.error(error);
             return catCodes[ResponseCodes.GENERAL_ERROR];
         }
-    
+    }
+
+    static async getMessagesFromPrivateChat (chat_id: number) {
+        try {
+            let response;
+            PgSql.instance;
+            const querystr = `
+                SELECT * FROM messages WHERE user_message_id = ${chat_id}
+                ORDER BY created ASC
+            `;
+            const resp = await PgSql.instance.cnn.query(querystr);
+            response = resp.rows;
+            return response;
+        } catch (error) {
+            return catCodes[ResponseCodes.GENERAL_ERROR];
+        }
     }
   
   }
