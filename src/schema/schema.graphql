@@ -5,9 +5,15 @@ type Query {
   """
   getUserInfo(user_id: ID!): User
   """
-  returns all available user's private chat
+  returns the information of the user who is chatting with current user
+  / also returns chat_id and whether current user is the sender or recipient of each conversation
   """
   getPrivateChatsRooms(user_id: ID!): [UserInChat]
+  """
+  returns all messages from specific private chat in ascending order
+  / also returns user_id of user that sent each message 
+  """
+  getMessagesPrivateChat(chat_id: ID!): [Message]
 }
 
 type Mutation {
@@ -38,6 +44,12 @@ type LoginResponse {
   token: String
 }
 
+type Message {
+  content: String
+  created: String
+  user_id: ID
+}
+
 interface User {
     user_id: ID
     name: String
@@ -48,7 +60,7 @@ interface User {
 
 type UserInChat implements User {
   user_id: ID
-  room_id: ID
+  chat_id: ID
   name: String
   email: String
   created: String

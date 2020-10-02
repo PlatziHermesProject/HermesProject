@@ -21,6 +21,14 @@ const query: IResolvers = {
       } catch(error) {
         return catCodes[ResponseCodes.GENERAL_ERROR];
       }
+    },
+    async getMessagesPrivateChat(__:void, { chat_id }) {
+      try {
+        const response  = await FetchDataOperations.getMessagesFromPrivateChat(chat_id);
+        return response;
+      } catch(error) {
+        return catCodes[ResponseCodes.GENERAL_ERROR];
+      }
     }
   }
 };
