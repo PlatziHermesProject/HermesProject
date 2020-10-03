@@ -14,11 +14,18 @@ type Mutation {
   """
   Login account method
   """
-  loginAccount(email: String!, password: String!): GeneralResponse
+  loginAccount(email: String!, password: String!): LoginResponse
 }
 
 type GeneralResponse {
   status: String
   code: String
   message: String
+}
+
+type LoginResponse {
+  status: String
+  code: String
+  message: String
+  token: String
 }

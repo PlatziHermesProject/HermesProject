@@ -1,7 +1,8 @@
 import { catCodes } from './../models/response-codes';
 import { PgSql } from '../config/db-connection';
 import { ResponseCodes } from '../models/enums';
-import * as jwt from 'jsonwebtoken';
+import { sign, SignOptions } from 'jsonwebtoken';
+import cfg from '../config/config';
 
 export class LoginOperations {
 
@@ -13,21 +14,27 @@ export class LoginOperations {
       const querystr = "SELECT public.login($1, $2)";
       const resp = await PgSql.executeQuery(querystr, [email, password]);
       const respJson = resp.login;
-      // console.log(JSON.stringify(respJson));
-      const token = jwt.sign({ email: respJson.email }, 'hermes', { algorithm: 'HS256' })
-
-      console.log(token);
-      
+      const token = sign(respJson, cfg.jwt.SECRET_TOKEN, cfg.jwt.options as SignOptions )
 
       if ( respJson.user_id && respJson.credentials === true ) {
-        response = catCodes[ResponseCodes.LOGIN_OK];
+        response = {
+          ...catCodes[ResponseCodes.LOGIN_OK],
+          token
+        };
       } else {
         response = catCodes[ResponseCodes.LOGIN_BAD];
+        response = {
+          ...catCodes[ResponseCodes.LOGIN_BAD],
+          token: ''
+        };
       }
       return response;
 
     } catch (error) {
-      return catCodes[ResponseCodes.LOGIN_BAD];      
+      return {
+        ...catCodes[ResponseCodes.LOGIN_BAD],
+        token: ''
+      };
     }
   }
 }
