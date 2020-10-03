@@ -8,6 +8,7 @@ const cfg = {
     database: process.env.DB_NAME || 'hermes',
     password: process.env.DB_PASS || 'Hermes.2020'
   },
+  SECRET_TOKEN: process.env.SECRET_TOKEN || 'hermes'
 }
 
 export default cfg;

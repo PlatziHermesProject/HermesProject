@@ -2,6 +2,7 @@ import { ResponseCodes } from './../models/enums';
 import { IResolvers } from "graphql-tools";
 import { catCodes } from '../models/response-codes';
 import { RegisterOperations } from '../controllers/register-account';
+import { LoginOperations } from '../controllers/login-account';
 
 const mutation: IResolvers = {
   Mutation: {
@@ -12,6 +13,14 @@ const mutation: IResolvers = {
         return response;
       } catch (error) {
         return catCodes[ResponseCodes.GENERAL_ERROR];
+      }
+    },
+    async loginAccount(__:void, { email, password }) {
+      try {
+        const response = await LoginOperations.loginAccount(email, password);
+        return response
+      } catch (error) {
+        return catCodes[ResponseCodes.LOGIN_BAD];
       }
     }
   }
