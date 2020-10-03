@@ -8,7 +8,10 @@ const cfg = {
     database: process.env.DB_NAME || 'hermes',
     password: process.env.DB_PASS || 'Hermes.2020'
   },
-  SECRET_TOKEN: process.env.SECRET_TOKEN || 'hermes'
+  jwt: {
+    SECRET_TOKEN: process.env.SECRET_TOKEN || 'hermes',
+    options: { algorithm: 'HS256' }
+  }
 }
 
 export default cfg;
