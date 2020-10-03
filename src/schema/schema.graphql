@@ -1,9 +1,8 @@
 type Query {
-  hello: String
   """
   returns user info by Id
   """
-  getUserInfo(user_id: ID!): User
+  getUserInfo(user_id: ID!): UserInfo
   """
   returns the information of the user who is chatting with current user
   / also returns chat_id and whether current user is the sender or recipient of each conversation
@@ -14,17 +13,51 @@ type Query {
   / also returns user_id of user that sent each message 
   """
   getMessagesPrivateChat(chat_id: ID!): [Message]
+  """
+  Returns all letters available on the platform in ascending order by creation time
+  """
+  getLetters: [Letter]
+  """
+  Returns specific letter info
+  """
+  getLetterInfo(letter_id: ID!): Letter
+  """
+  Returns all letters a user has created in ascending order by creation time
+  """
+  getUserLetters(user_id: ID!): [Letter]
+  """
+  Returns all letter's replies a user has created in ascending order by creation time
+  """
+  getUserReplies(user_id: ID!): [Reply]
+  """
+  Returns all replies for a specific letter in ascending order by creation time
+  """
+  getLetterReplies(letter_id: ID!): [Reply]
+  """
+  Returns specific reply info
+  """
+  getResponseInfo(response_id: ID!): Reply
 }
 
 type Mutation {
   """
-  Example mutation, retuns string
-  """
-  helloUpdate: String
-  """
   Create account method
   """
   createAccount(email: String!, password: String!, name: String!): GeneralResponse
+  """
+  Create letter
+  """
+  createLetter(content: String!, user_id: ID!, name: String!, avatar: String = "https://source.unsplash.com/dGMcpbzcq1I" ): GeneralResponse
+  """
+  Reply a letter / 
+  if response message is "chat creation done" or response code is "HS-010" a private chat has been created due to number of intercation
+  """
+  replyLetter(content: String!, user_id: ID!, letter_id: ID!, name: String!, avatar: String = "https://source.unsplash.com/dGMcpbzcq1I", reaction: Boolean = false): GeneralResponse
+  """
+  React to a reply / 
+  if response message is "chat creation done" or response code is "HS-010" a private chat has been created due to number of intercation
+  """
+  replyReaction(user_id: ID!, response_id: ID!): GeneralResponse
 }
 
 type GeneralResponse {
@@ -47,6 +80,14 @@ interface User {
     updated: String
 }
 
+type UserInfo implements User{
+  user_id: ID
+  name: String
+  email: String
+  created: String
+  updated: String
+}
+
 type UserInChat implements User {
   user_id: ID
   chat_id: ID
@@ -55,4 +96,26 @@ type UserInChat implements User {
   created: String
   updated: String
   status: String
+}
+
+type Letter {
+  user_id: ID
+  letter_id: ID
+  content: String
+  author_letter: String
+  avatar: String
+  created: String
+  updated: String
+}
+
+type Reply {
+  user_id: ID
+  response_id: ID
+  letter_id: ID
+  content: String
+  author_letter: String
+  avatar: String
+  reaction: Boolean
+  created: String
+  updated: String
 }

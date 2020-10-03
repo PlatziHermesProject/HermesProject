@@ -28,6 +28,8 @@ export class FetchDataOperations {
       }
     }
 
+    // CHATS
+
     private static async getPrivateChatsRoomsWhenSenderId (user_id: number) {
     /**
      * Function that brings those chats where currrent user is sender 
@@ -136,5 +138,140 @@ export class FetchDataOperations {
             return catCodes[ResponseCodes.GENERAL_ERROR];
         }
     }
-  
+
+    // LETTERS
+
+    static async getAvailableLetters () {
+        try {
+            let response;
+            PgSql.instance;
+            const querystr = `
+                SELECT * FROM letters
+                ORDER BY created ASC
+            `;
+            const resp = await PgSql.instance.cnn.query(querystr);
+            response = resp.rows;
+            return response;
+        } catch (error) {
+            return catCodes[ResponseCodes.GENERAL_ERROR];
+        }
+    }
+
+    static async getLetterInfo (letter_id: number) {
+        try {
+            let response;
+            PgSql.instance;
+            const querystr = `
+                SELECT * FROM letters WHERE letter_id = ${letter_id}
+            `;
+            const resp = await PgSql.instance.cnn.query(querystr);
+            response = resp.rows[0];
+            return response;
+        } catch (error) {
+            return catCodes[ResponseCodes.GENERAL_ERROR];
+        }
+    }
+
+    static async getLettersFromUser (user_id: number) {
+        try {
+            let response;
+            PgSql.instance;
+            const querystr = `
+                SELECT * FROM letters WHERE user_id = ${user_id}
+                ORDER BY created ASC
+            `;
+            const resp = await PgSql.instance.cnn.query(querystr);
+            response = resp.rows;
+            return response;
+        } catch (error) {
+            return catCodes[ResponseCodes.GENERAL_ERROR];
+        }
+    }
+
+    static async getRepliesFromUser (user_id: number) {
+        try {
+            let response;
+            PgSql.instance;
+            const querystr = `
+                SELECT * FROM responses WHERE user_id = ${user_id}
+                ORDER BY created ASC
+            `;
+            const resp = await PgSql.instance.cnn.query(querystr);
+            response = resp.rows;
+            return response;
+        } catch (error) {
+            return catCodes[ResponseCodes.GENERAL_ERROR];
+        }
+    }
+
+    static async getRepliesForSpecificLetter (letter_id: number) {
+        try {
+            let response;
+            PgSql.instance;
+            const querystr = `
+                SELECT * FROM responses WHERE letter_id = ${letter_id}
+                ORDER BY created ASC
+            `;
+            const resp = await PgSql.instance.cnn.query(querystr);
+            response = resp.rows;
+            return response;
+        } catch (error) {
+            return catCodes[ResponseCodes.GENERAL_ERROR];
+        }
+    }
+
+    static async getResponseInfo (response_id: number) {
+        try {
+            let response;
+            PgSql.instance;
+            const querystr = `
+                SELECT * FROM responses WHERE response_id = ${response_id}
+            `;
+            const resp = await PgSql.instance.cnn.query(querystr);
+            response = resp.rows[0];
+            return response;
+        } catch (error) {
+            return catCodes[ResponseCodes.GENERAL_ERROR];
+        }
+    }
+
+    static async interactionsTracking ( user_id_1: number, user_id_2: number ) {
+        try {
+            let counter;
+            PgSql.instance;
+            const querystr = `
+                SELECT * FROM "Interactions" 
+                    WHERE (user_id_1 = ${user_id_1} OR user_id_1 = ${user_id_2})
+                    AND (user_id_2 = ${user_id_1} OR user_id_2 = ${user_id_2})
+            `;
+            const response = await PgSql.instance.cnn.query(querystr);
+            console.log(response.rows);
+            
+            if (response.rows[0]) {
+                counter = response.rows[0].counter;
+                const querystr = `
+                    UPDATE "Interactions"
+                        SET counter=${counter + 1}
+                        WHERE (user_id_1 = ${user_id_1} OR user_id_1 = ${user_id_2})
+                        AND (user_id_2 = ${user_id_1} OR user_id_2 = ${user_id_2})
+                `;
+                await PgSql.instance.cnn.query(querystr);
+            } else {
+                const querystr = `
+                    INSERT INTO "Interactions"(
+                        user_id_1, user_id_2, counter)
+                        VALUES (${user_id_1}, ${user_id_2}, ${1});
+                `;
+                await PgSql.instance.cnn.query(querystr);
+            }
+            if (counter === 10) {
+                return catCodes[ResponseCodes.INIT_CHAT];
+            } else {
+                return catCodes[ResponseCodes.INTERACTION_TRACKED];
+            }
+        } catch (error) {
+            console.log(error);
+            return catCodes[ResponseCodes.GENERAL_ERROR];
+        }
+    }
   }
