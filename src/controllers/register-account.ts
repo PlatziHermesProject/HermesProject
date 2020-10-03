@@ -8,7 +8,6 @@ export class RegisterOperations {
   static async resgisterAccount(email: string, password: string, name: string) {
     try {
       let response;
-
       PgSql.instance;
       const querystr = "SELECT public.register($1, $2, $3)";
       const resp = await PgSql.executeQuery(querystr, [email, password, name]);
@@ -25,5 +24,4 @@ export class RegisterOperations {
       return catCodes[ResponseCodes.GENERAL_ERROR];
     }
   }
-
 }
