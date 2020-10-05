@@ -2,6 +2,20 @@ version: "3.8"
 
 services:
 
+  hs_reverse:
+    image: nginx
+    container_name: hs_reverseproxi
+    restart: always
+    ports: 
+      - "80:80"
+      - "443:443"
+    volumes: 
+      - ./../config/reverse/serv.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./../config/pki-validation:/usr/share/nginx/html/.well-known/pki-validation/
+      - ./../config/home:/home:ro
+    networks: 
+      - hs
+
   hs_db:
     image: postgres:12.4
     container_name: hs_db
@@ -63,13 +77,15 @@ services:
       - hs
 
   hs_frontend:
-    build:
-      context: .
-    image: hs_frontend:dev1
+    image: nginx
     container_name: hs_frontend  
+    volumes:
+      - ./../www:/usr/share/nginx/html
     ports:
       - "8081:80"
     restart: always
+    networks:
+      - hs
   
   hs_io:
     build:
